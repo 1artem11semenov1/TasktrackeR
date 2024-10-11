@@ -2,7 +2,7 @@
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        MainFrame frame = new MainFrame("Task trackeR");
-
+        //создание главного окна как Singleton
+        MainFrame.getInstance();
     }
 }

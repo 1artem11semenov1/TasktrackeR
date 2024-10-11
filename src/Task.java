@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Date;
+import java.util.UUID;
 import javax.xml.transform.*;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
@@ -19,64 +20,38 @@ import org.xml.sax.SAXException;
 
 
 public class Task {
+    public String PK;
     private String taskName;
     private String taskDescription;
     private Date createTime;
     private Date deadline;
 
     Task (String name, String description, Date dl){
+        PK = UUID.randomUUID().toString();
         taskName = name;
         taskDescription = description;
         createTime = new Date();
         deadline = dl;
 
         addToXML();
-
     }
 
     private void addToXML(){
-        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder;
-        Document document;
-        try {
-            builder = factory.newDocumentBuilder();
-            document = builder.parse(new File("tasks.xml"));
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (SAXException e) {
-            throw new RuntimeException(e);
-        }
-
-        NodeList root = document.getElementsByTagName("root");
-        Element task = document.createElement("task");
-        task.setAttribute("name", taskName);
-        task.setAttribute("description", taskDescription);
-        String createTimeStr = createTime.toString();
-        String deadlineStr = deadline.toString();
-        task.setAttribute("createTime", createTimeStr);
-        task.setAttribute("deadline", deadlineStr);
-        root.item(0).appendChild(task);
-        Transformer t;
-        try {
-            t = TransformerFactory.newInstance().newTransformer();
-        } catch (TransformerConfigurationException e) {
-            throw new RuntimeException(e);
-        }
-        t.setOutputProperty(OutputKeys.INDENT, "yes");
-        try {
-            t.transform(new DOMSource(document), new StreamResult("tasks.xml"));
-        } catch (TransformerException e) {
-            throw new RuntimeException(e);
-        }
-
+        Manager.getInstance().newTask(PK, taskName, taskDescription, createTime.toString(), deadline.toString());
     }
 
+    public Date getCreateTime(){
+        return createTime;
+    }
     public void info(){
         System.out.println(taskName);
         System.out.println(taskDescription);
         System.out.println(createTime);
         System.out.println(deadline);
     }
+
+   /* public void deleteTask(){
+        MainFrame.getInstance().deleteTask(this);
+
+    }*/
 }

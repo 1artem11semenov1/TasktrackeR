@@ -49,7 +49,8 @@ public class NewTaskFrame extends JFrame{
                 throw new RuntimeException(ex);
             }
             Task newTask = new Task(taskName, taskDescription, deadline);
-            //newTask.info();
+            //вызов обновления окна задач
+            MainFrame.getInstance().updateTasks();
         }
     }
 
