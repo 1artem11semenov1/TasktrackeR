@@ -50,8 +50,4 @@ public class Task {
         System.out.println(deadline);
     }
 
-   /* public void deleteTask(){
-        MainFrame.getInstance().deleteTask(this);
-
-    }*/
 }
