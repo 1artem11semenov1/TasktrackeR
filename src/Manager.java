@@ -4,6 +4,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import javax.print.attribute.Attribute;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -50,6 +51,8 @@ public class Manager {
         task.setAttribute("description", taskDescription);
         task.setAttribute("createTime", createTime);
         task.setAttribute("deadline", deadline);
+        task.setAttribute("isStart", "0");
+        task.setAttribute("isFinish", "0");
         root.item(0).appendChild(task);
         Transformer t;
         try {
@@ -71,6 +74,63 @@ public class Manager {
         for (int i=0; i<tasks.getLength(); ++i){
             if (tasks.item(i).getAttributes().getNamedItem("PK").getTextContent().equals(PK)){
                 tasks.item(i).getParentNode().removeChild(tasks.item(i));
+                break;
+            }
+        }
+
+        Transformer t;
+        try {
+            t = TransformerFactory.newInstance().newTransformer();
+        } catch (TransformerConfigurationException e) {
+            throw new RuntimeException(e);
+        }
+        t.setOutputProperty(OutputKeys.INDENT, "yes");
+        try {
+            t.transform(new DOMSource(document), new StreamResult("tasks.xml"));
+        } catch (TransformerException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public void updateStartStatus(String PK){
+        NodeList root = document.getElementsByTagName("root");
+        NodeList tasks = document.getElementsByTagName("task");
+
+        for (int i=0; i<tasks.getLength(); ++i){
+            if (tasks.item(i).getAttributes().getNamedItem("PK").getTextContent().equals(PK)){
+                if(tasks.item(i).getAttributes().getNamedItem("isStart").getTextContent().equals("0")){
+                    tasks.item(i).getAttributes().getNamedItem("isStart").setNodeValue("1");
+                } else {
+                    tasks.item(i).getAttributes().getNamedItem("isStart").setNodeValue("0");
+                }
+                break;
+            }
+        }
+
+        Transformer t;
+        try {
+            t = TransformerFactory.newInstance().newTransformer();
+        } catch (TransformerConfigurationException e) {
+            throw new RuntimeException(e);
+        }
+        t.setOutputProperty(OutputKeys.INDENT, "yes");
+        try {
+            t.transform(new DOMSource(document), new StreamResult("tasks.xml"));
+        } catch (TransformerException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void updateFinishStatus(String PK){
+        NodeList root = document.getElementsByTagName("root");
+        NodeList tasks = document.getElementsByTagName("task");
+
+        for (int i=0; i<tasks.getLength(); ++i){
+            if (tasks.item(i).getAttributes().getNamedItem("PK").getTextContent().equals(PK)){
+                if(tasks.item(i).getAttributes().getNamedItem("isFinish").getTextContent().equals("0")){
+                    tasks.item(i).getAttributes().getNamedItem("isFinish").setNodeValue("1");
+                } else {
+                    tasks.item(i).getAttributes().getNamedItem("isFinish").setNodeValue("0");
+                }
                 break;
             }
         }
