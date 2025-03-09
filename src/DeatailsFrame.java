@@ -8,20 +8,29 @@ public class DeatailsFrame extends JFrame {
         JFrame taskCreator = new JFrame("создание задачи");
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.setSize(250, 250);
+        this.setResizable(false);
         ImageIcon image = new ImageIcon("src/logo.png");
         this.setIconImage(image.getImage());
         this.getContentPane().setBackground(Color.LIGHT_GRAY);
         this.setLayout(null);
 
-        JLabel details = new JLabel(detailsInput);
-        details.setBounds(0,0,250,150);
+        String[] detailsOutArray = detailsInput.split("\n");
+        String detailsOut = "<html>";
+        for (int i = 0; i<detailsOutArray.length; ++i){
+            detailsOut += detailsOutArray[i] + "<br>";
+        }
+        detailsOut+="</html>";
+
+        JLabel details = new JLabel(detailsOut);
+        JScrollPane detailsScrl = new JScrollPane(details);
+        detailsScrl.setBounds(0,0,235,150);
         details.setBackground(Color.white);
         details.setOpaque(true);
         JButton deleteButton = new JButton("удалить задачу");
         deleteButton.addActionListener(new DeleteTaskListener(PKInput));
-        deleteButton.setBounds(0,150,250,100);
+        deleteButton.setBounds(0,150,250,75);
 
-        this.add(details);
+        this.add(detailsScrl);
         this.add(deleteButton);
         this.setVisible(true);
     }
@@ -31,6 +40,7 @@ public class DeatailsFrame extends JFrame {
         public void actionPerformed(ActionEvent e){
             Manager.getInstance().deleteTask(PK);
             MainFrame.getInstance().updateTasks();
+            MainFrame.getInstance().updateInfo();
         }
     }
 }
